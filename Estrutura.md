@@ -267,6 +267,46 @@ pseudo_r2 <- 1 -
 
 cat(
   "Pseudo R² (McFadden):",
+#Análise exploratória:
+
+dados <- read.csv("DatasetSIM_tratado.csv", sep=";", dec=",")
+
+baixada <- subset(dados, MUNICIPIO %in% c("Santos", "São Vicente", "Guarujá", "Praia Grande", "Cubatão"))
+
+
+baixada$IDADE_ANOS <- as.numeric(as.character(baixada$IDADE))
+
+
+print("Resumo estatístico da Idade:")
+cat("\n")
+summary(baixada$IDADE_ANOS)
+cat("\n")
+print(paste("Desvio Padrão:", sd(baixada$IDADE_ANOS, na.rm = TRUE)))
+
+
+par(mfrow = c(1, 2), mar = c(4, 4, 2, 1), pty = "s")
+
+hist(baixada$IDADE_ANOS, prob = TRUE, col = "lightblue", border = "white",
+     main = "Histograma de Idade", xlab = "Idade (anos)", ylab = "Densidade")
+
+curve(dnorm(x, mean(baixada$IDADE_ANOS, na.rm = TRUE), sd(baixada$IDADE_ANOS, na.rm = TRUE)),
+      add = TRUE, col = "darkorange", lwd = 2)
+
+boxplot(baixada$IDADE_ANOS, col = "lightblue", main = "Boxplot de Idade", ylab = "Idade (anos)")
+
+
+
+boxplot(IDADE_ANOS ~ ESCOLARIDADE, data = baixada, col = "lightgreen",
+        main = "Idade do Óbito por Escolaridade", xlab = "Escolaridade",
+        ylab = "Idade (anos)", cex.axis = 0.7)
+
+
+print("Frequência de Óbitos por Sexo:")
+table(baixada$SEXO)
+
+
+print("Top 5 Causas Básicas de Morte:")
+sort(table(baixada$CAUSABASMORTE), decreasing = TRUE)[1:5]
   round(as.numeric(pseudo_r2), 4),
   "\n"
 )
