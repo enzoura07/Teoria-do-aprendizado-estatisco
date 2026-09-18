@@ -611,3 +611,54 @@ O projeto segue, de forma geral, as seguintes etapas:
    - Interpretação dos coeficientes;
    - Análise da capacidade preditiva;
    - Identificação das variáveis mais relevantes.
+
+
+     CONSOLIDADO: 
+     # Relatório Consolidado do Projeto — SIM (Sistema de Informação sobre Mortalidade)
+
+## 1. Visão Geral do Projeto
+Este projeto analisa os microdados do **Sistema de Informação sobre Mortalidade (SIM)** focando na região da **Baixada Santista** (Santos, São Vicente, Guarujá, Praia Grande e Cubatão). O objetivo principal é identificar padrões socioeconômicos e demográficos associados à idade e ao perfil do óbito por meio de Análise Exploratória e Modelagem Estatística Avançada.
+
+---
+
+## 2. Corpus e Processamento de Dados
+
+* **Base de Dados:** Dataset estruturado contendo registros de óbitos tratados (`DatasetSIM_tratado.csv`).
+* **Contextualização Regional:** Complementado com fontes públicas de domínio histórico e geográfico da região.
+* **Engenharia de Variáveis (Feature Engineering):**
+  * **Escolaridade:** Conversão de categorias discretas para escala contínua em anos ($0, 2, 5.5, 9.5, 12$).
+  * **Sexo:** Binarização da variável resposta/preditora ($1 = \text{Feminino}$, $0 = \text{Masculino}$).
+  * **Limpeza e Filtragem:** Remoção sistemática de valores ausentes (`NA`), registros vazios e categorias não informadas ("Ignorado").
+
+---
+
+## 3. Análise Exploratória de Dados (EDA)
+
+A etapa exploratória mapeia a distribuição e o perfil epidemiológico das mortes registradas na região:
+
+* **Perfil Etário:** Levantamento de média, mediana, desvio padrão e distribuição de densidade da idade no momento do óbito.
+* **Análise Bivariada:** Cruzamento entre nível de escolaridade e expectativa de vida ao falecer via *boxplots*.
+* **Perfil Epidemiológico:** Identificação da frequência de óbitos por sexo e o ranking das **Top 5 causas básicas de morte**.
+
+---
+
+## 4. Modelagem Estatística
+
+| Modelo | Tipo de Regressão | Variável Resposta (Alvo) | Variáveis Preditoras |
+| :--- | :--- | :--- | :--- |
+| **Modelo 1** | Linear Múltipla | `IDADE` (Contínua) | `ESCOLARIDADE_ANOS`, `ANO`, `SEXO` |
+| **Modelo 2** | Logística (Base) | `SEXO_bin` (Binária) | `IDADE`, `ESCOLARIDADE` (Ref: "Nenhuma") |
+| **Modelo 3** | Logística (Expandida) | `SEXO_bin` (Binária) | `IDADE`, `ESCOLARIDADE`, `LOCAL_MORTE` (Ref: "Hospital") |
+
+---
+
+## 5. Pipeline de Validação e Avaliação
+Data Prep -> Divisão Treino/Teste (70/30) -> Ajuste do Modelo -> Avaliação das Métricas
+
+
+1. **Ajuste dos Modelos:** Executado no conjunto de treino ($70\%$ dos dados) com semente aleatória fixada (`set.seed(42)`).
+2. **Razão de Chances (Odds Ratios):** Cálculo dos coeficientes exponenciados $exp(\beta)$ com intervalos de confiança de $95\%$.
+3. **Desempenho Preditivo (Massa de Teste - 30%):**
+   * **Matriz de Confusão:** Avaliação de falsos positivos/negativos utilizando *threshold* de $0.5$.
+   * **Acurácia Global:** Proporção total de acertos das previsões na base de teste.
+   * **Pseudo $R^2$ de McFadden:** Medida de qualidade do ajuste comparando o modelo ajustado contra o modelo nulo.
