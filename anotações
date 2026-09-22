@@ -1,0 +1,56 @@
+Regreessão linear com RIDGE E LASSO
+
+
+
+Leitura e Preparação dos Dados: Os dados do arquivo datasetDEF_translated.xlsx foram carregados e filtrados com sucesso, resultando em 81.448 observações válidas para a análise.
+
+Previsões do Modelo Original (MQO): O modelo de Mínimos Quadrados Ordinários (MQO) foi ajustado. As previsões para os novos dados fornecidos (ESCOLARIDADE_ANOS, ANO, SEXO) foram calculadas, mostrando as idades previstas de acordo com as combinações de escolaridade, ano e sexo.
+
+Comparação de Modelos (MQO vs. Ridge vs. Lasso):
+
+Foi realizada uma divisão dos dados em conjuntos de treino e teste (70/30) para uma comparação justa entre os modelos MQO, Ridge e Lasso.
+RMSE (Erro Quadrático Médio):
+MQO: Obteve um RMSE de 16.81 no treino e 16.79 no teste.
+Ridge: Com lambda.min, apresentou RMSE de 16.81 no treino e 16.79 no teste, muito similar ao MQO, indicando uma penalidade pequena ou que a regularização não alterou drasticamente o desempenho neste caso.
+Lasso: Com lambda.1se, teve RMSE de 16.87 no treino e 16.83 no teste. O Lasso teve um RMSE ligeiramente maior que o MQO e Ridge nos dados de treino e teste, o que pode indicar que a simplificação do modelo (zerando alguns coeficientes) teve um pequeno custo na precisão.
+Análise dos Coeficientes:
+
+MQO: Apresentou coeficientes para todas as variáveis explicativas: ESCOLARIDADE_ANOS (-0.9914), ANO (0.2466) e SEXOMasculino (-6.5469).
+Ridge: Os coeficientes do Ridge foram muito próximos aos do MQO, mas com uma pequena contração (shrinkage) em direção a zero, como esperado da regularização Ridge. Por exemplo, ANO foi 0.2415 e SEXOMasculino foi -6.4185.
+Lasso: Houve uma diferença notável aqui. O Lasso (utilizando lambda.1se) zerou o coeficiente da variável ANO, indicando que o Lasso considerou essa variável menos relevante para o modelo de previsão de idade sob a penalidade imposta. Os outros coeficientes também foram encolhidos, como ESCOLARIDADE_ANOS (-0.7484) e SEXOMasculino (-4.7767).
+Valores de Lambda (Penalidade):
+
+O lambda.min selecionado para o Ridge foi de 0.4001.
+Para o Lasso, o lambda.min foi 0.0199 e o lambda.1se (que é o lambda mais parcimonioso dentro de um erro padrão do mínimo) foi 0.9911. Foi o lambda.1se que levou o coeficiente de ANO a zero, promovendo a seleção de variáveis.
+
+
+
+
+
+Reg logistica ridge e lasso
+1. Preparação dos Dados:
+
+O script carregou e filtrou os dados com sucesso, resultando em 81.443 observações para análise.
+2. Modelo de Regressão Logística Original (GLM):
+
+O modelo prediz SEXO_bin (gênero binário) com base em IDADE, ESCOLARIDADE e LOCAL_MORTE.
+Razões de Chance (ORs) foram calculadas:
+IDADE: Um OR de 1.021 sugere que para cada ano de aumento na idade, as chances de SEXO_bin (assumindo '1' representa 'Feminino') aumentam em 2.1%.
+ESCOLARIDADE: Comparado com 'Nenhuma' (Nenhuma Escolaridade), todos os níveis de escolaridade mais altos mostraram ORs menores que 1 (variando de 0.773 a 0.517), indicando menores chances de SEXO_bin à medida que a escolaridade aumenta. Isso implica uma associação negativa entre maior escolaridade e SEXO_bin neste conjunto de dados.
+LOCAL_MORTE: Comparado com 'Hospital', outros locais como 'Domicílio' (0.766) e 'Via pública' (0.212) tiveram chances significativamente menores de SEXO_bin.
+3. Comparação de Modelos (GLM vs. Ridge vs. Lasso):
+
+Acurácia de Teste: Todos os três modelos apresentaram desempenho semelhante em termos de acurácia de teste:
+Regressão Logística (glm): 0.6032
+Ridge (lambda.min): 0.6038
+Lasso (lambda.1se): 0.6057 (ligeiramente a mais alta)
+Desvio de Teste: O desvio (uma medida de ajuste do modelo, menor é melhor) também foi muito próximo para todos os modelos:
+Regressão Logística (glm): 1.323
+Ridge (lambda.min): 1.323
+Lasso (lambda.1se): 1.324
+GLM e Ridge tiveram um desvio marginalmente menor.
+4. Análise dos Coeficientes:
+
+Regressão Ridge (lambda.min): Este modelo encolheu todos os coeficientes em direção a zero, mas manteve todos eles diferentes de zero. IDADE teve um coeficiente positivo, enquanto as categorias de ESCOLARIDADE e LOCAL_MORTE geralmente tiveram coeficientes negativos, com LOCAL_MORTEVia pública tendo o maior impacto negativo (-1.4209).
+Regressão Lasso (lambda.1se): O Lasso realizou seleção de variáveis, definindo o coeficiente para ESCOLARIDADE1 a 3 anos como zero, efetivamente removendo este preditor do modelo. Outros coeficientes foram encolhidos, com LOCAL_MORTEVia pública novamente mostrando um forte coeficiente negativo (-1.2635).
+Em resumo: Embora todos os três modelos tenham produzido métricas de desempenho comparáveis em termos de acurácia e desvio, o Lasso forneceu um modelo mais parcimonioso ao identificar e excluir ESCOLARIDADE1 a 3 anos como um preditor não significativo. A variável IDADE consistentemente mostrou uma relação positiva com SEXO_bin, enquanto ESCOLARIDADE e LOCAL_MORTE geralmente mostraram associações negativas em comparação com seus níveis de referência.
